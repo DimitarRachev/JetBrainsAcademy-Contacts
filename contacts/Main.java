@@ -1,5 +1,6 @@
 package contacts;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -14,7 +15,7 @@ public class Main {
                 case "add":
                     addPerson(scanner, phoneBook);
                     break;
-                    //TODO implement remove and edit, after completion of the project
+                //TODO implement remove and edit, after completion of the project
 //                case "remove":
 //                    removePerson(scanner, phoneBook);
 //                    break;
@@ -22,17 +23,90 @@ public class Main {
 //                    editPerson(scanner, phoneBook);
 //                    System.out.println("The record updated!");
 //                    break;
+                case "list":
+                    listMenu(scanner, phoneBook);
+                    break;
+                case "search":
+                    mainSearch(scanner, phoneBook);
+                    break;
+//                case "info":
+//                    printInfo(scanner, phoneBook);
+//                    break;
                 case "count":
                     System.out.println("The Phone Book has " + phoneBook.count() + " records.");
-                    break;
-                case "info":
-                    printInfo(scanner, phoneBook);
                     break;
                 case "exit":
                     System.exit(0);
                     break;
             }
             System.out.println();
+        }
+    }
+
+    private static void listMenu(Scanner scanner, PhoneBook phoneBook) {
+        System.out.println(phoneBook);
+        System.out.println();
+        System.out.println("[list] Enter action ([number], back): ");
+        String command = scanner.nextLine();
+        switch (command) {
+            case "back":
+                return;
+            default:
+                int index = Integer.parseInt(command) - 1;
+                Contact contact = phoneBook.contacts.get(index);
+                System.out.println(contact.getInfo());
+                System.out.println();
+                recordHandling(scanner, contact, phoneBook, index);
+                break;
+        }
+    }
+
+    private static void mainSearch(Scanner scanner, PhoneBook phoneBook) {
+        System.out.println("Enter search query: ");
+        String searchTerm = scanner.nextLine();
+        ;
+        List<Contact> temp = phoneBook.search(searchTerm);
+        PhoneBook tempBook = new PhoneBook(temp);
+        System.out.println("Found " + tempBook.count() + " results:");
+        System.out.println(tempBook);
+        System.out.println();
+        searchMenu(tempBook, scanner, phoneBook);
+    }
+
+    private static void searchMenu(PhoneBook tempBook, Scanner scanner, PhoneBook phoneBook) {
+        System.out.println("[search] Enter action ([number], back, again): ");
+        String action = scanner.nextLine();
+        switch (action) {
+            case "back":
+                return;
+            case "again":
+                mainSearch(scanner, phoneBook);
+                break;
+            default:
+                int index = Integer.parseInt(action) - 1;
+                Contact contact = tempBook.contacts.get(index);
+                System.out.println(contact.getInfo());
+                System.out.println();
+                recordHandling(scanner, contact, phoneBook, index);
+        }
+    }
+
+    private static void recordHandling(Scanner scanner, Contact contact, PhoneBook phoneBook, int index) {
+        System.out.println("[record] Enter action (edit, delete, menu): ");
+        String command = scanner.nextLine();
+        switch (command) {
+            case "delete":
+                phoneBook.contacts.remove(index);
+                break;
+            case "menu":
+                return;
+            case "edit":
+                contact.edit(scanner);
+                System.out.println("Saved");
+                System.out.println(contact.getInfo());
+                System.out.println();
+                recordHandling(scanner, contact, phoneBook, index);
+                break;
         }
     }
 

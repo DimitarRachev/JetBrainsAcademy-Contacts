@@ -44,6 +44,11 @@ public class Organization extends Contact {
     }
 
     @Override
+    public String forSearch() {
+        return super.forSearch() + (address == null ? "" : address);
+    }
+
+    @Override
     public String getInfo() {
         StringBuilder sb = new StringBuilder();
         sb.append("Organization name: ").append(super.getName()).append(System.lineSeparator());

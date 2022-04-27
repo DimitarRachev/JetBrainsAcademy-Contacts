@@ -67,6 +67,11 @@ public class Person extends Contact {
     }
 
     @Override
+    public String forSearch() {
+        return super.forSearch() + (surname == null ? "" : surname) + (birthday == null ? "" : birthday) + (gender == null ? "" : gender);
+    }
+
+    @Override
     public String toString() {
         return getName() + " " + getSurname();
     }

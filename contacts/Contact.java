@@ -54,5 +54,9 @@ public abstract class Contact {
          sb.append("Time last edit: ").append(getEdited());
          return sb.toString();
      }
+
+    public String forSearch() {
+         return name + number + created + edited;
+    }
 }
 
