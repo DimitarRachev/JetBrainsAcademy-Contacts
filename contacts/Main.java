@@ -1,37 +1,44 @@
 package contacts;
 
+import java.io.*;
 import java.util.List;
 import java.util.Scanner;
 
+
 public class Main {
-    public static void main(String[] args) {
+
+   static ObjectOutputStream outStream = null;
+
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
 
         Scanner scanner = new Scanner(System.in);
-        PhoneBook phoneBook = new PhoneBook();
+        File file = null;
+        if (args.length != 0) {
+            file = new File(args[0]);
+        }
+        PhoneBook phoneBook;
+        if (file == null) {
+            phoneBook = new PhoneBook();
+        } else {
+            outStream = new ObjectOutputStream(new FileOutputStream(file));
+            phoneBook = (PhoneBook) new ObjectInputStream(new BufferedInputStream(new FileInputStream(file))).readObject();
+        }
+
+        phoneBook.setFile(file);
         while (true) {
             System.out.print("[menu] Enter action (add, list, search, count, exit): ");
             String command = scanner.nextLine();
             switch (command) {
                 case "add":
                     addPerson(scanner, phoneBook);
+                    saveContacts(outStream, phoneBook);
                     break;
-                //TODO implement remove and edit, after completion of the project
-//                case "remove":
-//                    removePerson(scanner, phoneBook);
-//                    break;
-//                case "edit":
-//                    editPerson(scanner, phoneBook);
-//                    System.out.println("The record updated!");
-//                    break;
                 case "list":
                     listMenu(scanner, phoneBook);
                     break;
                 case "search":
                     mainSearch(scanner, phoneBook);
                     break;
-//                case "info":
-//                    printInfo(scanner, phoneBook);
-//                    break;
                 case "count":
                     System.out.println("The Phone Book has " + phoneBook.count() + " records.");
                     break;
@@ -43,7 +50,13 @@ public class Main {
         }
     }
 
-    private static void listMenu(Scanner scanner, PhoneBook phoneBook) {
+    private static void saveContacts(ObjectOutputStream outStream, PhoneBook phoneBook) throws IOException {
+        if (outStream != null) {
+            outStream.writeObject(phoneBook);
+        }
+    }
+
+    private static void listMenu(Scanner scanner, PhoneBook phoneBook) throws IOException {
         System.out.println(phoneBook);
         System.out.println();
         System.out.println("[list] Enter action ([number], back): ");
@@ -61,7 +74,7 @@ public class Main {
         }
     }
 
-    private static void mainSearch(Scanner scanner, PhoneBook phoneBook) {
+    private static void mainSearch(Scanner scanner, PhoneBook phoneBook) throws IOException {
         System.out.println("Enter search query: ");
         String searchTerm = scanner.nextLine();
         ;
@@ -73,7 +86,7 @@ public class Main {
         searchMenu(tempBook, scanner, phoneBook);
     }
 
-    private static void searchMenu(PhoneBook tempBook, Scanner scanner, PhoneBook phoneBook) {
+    private static void searchMenu(PhoneBook tempBook, Scanner scanner, PhoneBook phoneBook) throws IOException {
         System.out.println("[search] Enter action ([number], back, again): ");
         String action = scanner.nextLine();
         switch (action) {
@@ -91,7 +104,7 @@ public class Main {
         }
     }
 
-    private static void recordHandling(Scanner scanner, Contact contact, PhoneBook phoneBook, int index) {
+    private static void recordHandling(Scanner scanner, Contact contact, PhoneBook phoneBook, int index) throws IOException {
         System.out.println("[record] Enter action (edit, delete, menu): ");
         String command = scanner.nextLine();
         switch (command) {
@@ -103,42 +116,12 @@ public class Main {
             case "edit":
                 contact.edit(scanner);
                 System.out.println("Saved");
+                saveContacts(outStream, phoneBook);
                 System.out.println(contact.getInfo());
                 System.out.println();
                 recordHandling(scanner, contact, phoneBook, index);
                 break;
         }
-    }
-
-    private static void printInfo(Scanner scanner, PhoneBook phoneBook) {
-        System.out.println(phoneBook);
-        System.out.println("Enter index to show info: ");
-        int index = Integer.parseInt(scanner.nextLine()) - 1;
-        Contact contact = phoneBook.contacts.get(index);
-        System.out.println(contact.getInfo());
-    }
-
-    private static void editPerson(Scanner scanner, PhoneBook phoneBook) {
-        if (phoneBook.count() == 0) {
-            System.out.println("No records to edit!");
-            return;
-        }
-        System.out.println(phoneBook);
-        System.out.print("Select a record: ");
-        int index = Integer.parseInt(scanner.nextLine()) - 1;
-        Contact contact = phoneBook.contacts.get(index);
-        contact.edit(scanner);
-    }
-
-    private static void removePerson(Scanner scanner, PhoneBook phoneBook) {
-        if (phoneBook.count() == 0) {
-            System.out.println("No records to remove!");
-            return;
-        }
-        System.out.println(phoneBook);
-        System.out.print("Select a record: ");
-        int index = Integer.parseInt(scanner.nextLine()) - 1;
-        System.out.println(phoneBook.remove(index));
     }
 
     private static void addPerson(Scanner scanner, PhoneBook phoneBook) {

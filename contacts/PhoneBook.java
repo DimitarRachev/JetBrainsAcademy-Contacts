@@ -1,12 +1,15 @@
 package contacts;
 
+import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class PhoneBook {
+public class PhoneBook implements Serializable {
     List<Contact> contacts;
+    File file;
 
     public PhoneBook() {
         this.contacts = new ArrayList<>();
@@ -56,5 +59,9 @@ public class PhoneBook {
             }
         }
         return list;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
     }
 }
