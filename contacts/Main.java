@@ -10,7 +10,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         PhoneBook phoneBook = new PhoneBook();
         while (true) {
-            System.out.print("Enter action (add, remove, edit, count, list, exit): ");
+            System.out.print("Enter action (add, remove, edit, count, info, exit): ");
             String command = scanner.nextLine();
             switch (command) {
                 case "add":
@@ -21,17 +21,23 @@ public class Main {
                     break;
                 case "edit":
                     editPerson(scanner, phoneBook);
+                    System.out.println("The record updated!");
                     break;
                 case "count":
                     System.out.println("The Phone Book has " + phoneBook.count() + " records.");
                     break;
-                case "list":
+                case "info":
                     System.out.println(phoneBook);
+                    System.out.println("Enter index to show info: ");
+                    int index = Integer.parseInt(scanner.nextLine()) - 1;
+                    Contact contact = phoneBook.contacts.get(index);
+                    System.out.println(contact.getInfo());
                     break;
                 case "exit":
                     System.exit(0);
                     break;
             }
+            System.out.println();
         }
     }
 
@@ -43,29 +49,8 @@ public class Main {
         System.out.println(phoneBook);
         System.out.print("Select a record: ");
         int index = Integer.parseInt(scanner.nextLine()) - 1;
-        System.out.print("Select a field (name, surname, number): ");
-        String field = scanner.nextLine();
-        switch (field) {
-            case "name":
-                System.out.println("Enter name: ");
-                String name = scanner.nextLine();
-                phoneBook.editName(index, name);
-                break;
-            case "surname":
-                System.out.println("Enter surname: ");
-                String surname = scanner.nextLine();
-                phoneBook.editSurname(index, surname);
-                break;
-            case "number":
-                System.out.println("Enter number: ");
-                String number = scanner.nextLine();
-                if (!isValid(number)) {
-                    number = "";
-                    System.out.println("Wrong number format!");
-                }
-                phoneBook.editNumber(index, number);
-                break;
-        }
+        Contact contact = phoneBook.contacts.get(index);
+        contact.edit(scanner);
     }
 
     private static void removePerson(Scanner scanner, PhoneBook phoneBook) {
@@ -80,25 +65,12 @@ public class Main {
     }
 
     private static void addPerson(Scanner scanner, PhoneBook phoneBook) {
-        System.out.println("Enter the name of the person:");
-        String name = scanner.nextLine();
-        System.out.println("Enter the surname of the person:");
-        String surname = scanner.nextLine();
-        System.out.println("Enter the number:");
-        String number = scanner.nextLine();
-        if (!isValid(number)) {
-            number = "";
-            System.out.println("Wrong number format!");
+        try {
+            Contact contact = ContactFactory.makeContact(scanner);
+            phoneBook.add(contact);
+            System.out.println("The record added.");
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
         }
-        System.out.println("The record added.");
-        Contact contact = new Contact(name, surname, number);
-        phoneBook.add(contact);
-    }
-
-    private static boolean isValid(String number) {
-        Pattern pattern = Pattern.compile("\\+?(\\([a-zA-Z0-9]+\\)[ -][a-zA-Z0-9]{2,}|[a-zA-Z0-9]+[ -]\\([a-zA-Z0-9]{2,}\\)|[a-zA-Z0-9]+[ -][a-zA-Z0-9]{2,}|\\([a-zA-Z0-9]+\\)|[a-zA-Z0-9]+)([ -][a-zA-Z0-9]{2,})*");
-        Matcher matcher = pattern.matcher(number);
-
-        return matcher.matches();
     }
 }

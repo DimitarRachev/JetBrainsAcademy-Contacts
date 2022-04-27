@@ -39,18 +39,4 @@ public class PhoneBook {
         }
     }
 
-    public void editName(int index, String name) {
-        Contact contact = contacts.get(index);
-        contact.setName(name);
-    }
-
-    public void editSurname(int index, String surname) {
-        Contact contact = contacts.get(index);
-        contact.setSurname(surname);
-    }
-
-    public void editNumber(int index, String number) {
-        Contact contact = contacts.get(index);
-        contact.setNumber(number);
-    }
 }

@@ -1,22 +1,31 @@
 package contacts;
 
-public class Contact {
-    private String name;
-    private String surname;
-    private String number;
+import java.time.LocalDateTime;
+import java.util.Scanner;
 
-    public Contact(String name, String surname, String number) {
+public abstract class Contact {
+    private String name;
+    private String number;
+    private LocalDateTime created;
+    private LocalDateTime edited;
+
+    public Contact(String name, String number, LocalDateTime created, LocalDateTime edited) {
         this.name = name;
-        this.surname = surname;
         this.number = number;
+        this.created = created;
+        this.edited = edited;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public void setSurname(String surname) {
-        this.surname = surname;
+    public void setCreated(LocalDateTime created) {
+        this.created = created;
+    }
+
+    public void setEdited(LocalDateTime edited) {
+        this.edited = edited;
     }
 
     public void setNumber(String number) {
@@ -27,22 +36,27 @@ public class Contact {
         return name;
     }
 
-    public String getSurname() {
-        return surname;
-    }
-
     public String getNumber() {
-        if (number.equals("")) {
-            return "[no number]";
-        }
         return number;
     }
 
-    @Override
-    public String toString() {
-        if (number.equals("")) {
-            return name + " " + surname + ", [no number]";
-        }
-        return name + " " + surname + ", " + number;
+    public LocalDateTime getCreated() {
+        return created;
     }
+
+    public LocalDateTime getEdited() {
+        return edited;
+    }
+
+    abstract void edit(Scanner scanner);
+
+
+     public String getInfo() {
+         StringBuilder sb = new StringBuilder();
+         sb.append("Number: ").append(getNumber() == null ? "[no data]" : getNumber()).append(System.lineSeparator());
+         sb.append("Time created: ").append(getCreated()).append(System.lineSeparator());
+         sb.append("Time last edit: ").append(getEdited());
+         return sb.toString();
+     }
 }
+
