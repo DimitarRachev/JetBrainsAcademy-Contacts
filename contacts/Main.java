@@ -8,28 +8,25 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         PhoneBook phoneBook = new PhoneBook();
         while (true) {
-            System.out.print("Enter action (add, remove, edit, count, info, exit): ");
+            System.out.print("[menu] Enter action (add, list, search, count, exit): ");
             String command = scanner.nextLine();
             switch (command) {
                 case "add":
                     addPerson(scanner, phoneBook);
                     break;
-                case "remove":
-                    removePerson(scanner, phoneBook);
-                    break;
-                case "edit":
-                    editPerson(scanner, phoneBook);
-                    System.out.println("The record updated!");
-                    break;
+                    //TODO implement remove and edit, after completion of the project
+//                case "remove":
+//                    removePerson(scanner, phoneBook);
+//                    break;
+//                case "edit":
+//                    editPerson(scanner, phoneBook);
+//                    System.out.println("The record updated!");
+//                    break;
                 case "count":
                     System.out.println("The Phone Book has " + phoneBook.count() + " records.");
                     break;
                 case "info":
-                    System.out.println(phoneBook);
-                    System.out.println("Enter index to show info: ");
-                    int index = Integer.parseInt(scanner.nextLine()) - 1;
-                    Contact contact = phoneBook.contacts.get(index);
-                    System.out.println(contact.getInfo());
+                    printInfo(scanner, phoneBook);
                     break;
                 case "exit":
                     System.exit(0);
@@ -37,6 +34,14 @@ public class Main {
             }
             System.out.println();
         }
+    }
+
+    private static void printInfo(Scanner scanner, PhoneBook phoneBook) {
+        System.out.println(phoneBook);
+        System.out.println("Enter index to show info: ");
+        int index = Integer.parseInt(scanner.nextLine()) - 1;
+        Contact contact = phoneBook.contacts.get(index);
+        System.out.println(contact.getInfo());
     }
 
     private static void editPerson(Scanner scanner, PhoneBook phoneBook) {

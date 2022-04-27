@@ -6,7 +6,7 @@ import java.util.Scanner;
 public abstract class Contact {
     private String name;
     private String number;
-    private LocalDateTime created;
+    private final LocalDateTime created;
     private LocalDateTime edited;
 
     public Contact(String name, String number, LocalDateTime created, LocalDateTime edited) {
@@ -20,11 +20,7 @@ public abstract class Contact {
         this.name = name;
     }
 
-    public void setCreated(LocalDateTime created) {
-        this.created = created;
-    }
-
-    public void setEdited(LocalDateTime edited) {
+      public void setEdited(LocalDateTime edited) {
         this.edited = edited;
     }
 
